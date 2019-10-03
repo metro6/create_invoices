@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Cписок продуктов:</h1>
+    {% for invoice in invoices %}
+        <a href="/invoices/{{ invoice.pk }}"> {{ invoice.name }}</a>
+    {% endfor %}
+{% endblock %}

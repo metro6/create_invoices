@@ -1,7 +1,8 @@
-# from django.contrib import admin
-#
-# from create_invoices.create_invoices.models import Invoice
-#
-# @admin.register(Invoice)
-# class InvoiceAdmin(admin.ModelAdmin):
-#     pass
+from django.contrib import admin
+
+from .models import Invoice
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    pass

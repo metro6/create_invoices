@@ -6,6 +6,9 @@
       <title>Создание форм</title>
     {% endif %}
   </head>
+  {% if not request.user.is_anonymous %}
+    <a href="/logout">Выйти</a>
+  {% endif %}
   <body>
       {% block content %}{% endblock %}
   </body>

@@ -1,4 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-  {{ login_form.as_p }}
+    <h1>Авторизация</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        {% if error %}
+            <p style="color: red;">Учетные данные введены неверно</p>
+        {% endif %}
+        <p><input type="text" name="name" value="">Логин</p>
+        <p><input type="password" name="password" value="">Пароль</p>
+        <p><input type="submit" value="Авторизоваться"></p>
+    </form>
 {% endblock %}

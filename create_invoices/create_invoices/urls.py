@@ -15,13 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 
-from .views import Login, logout, create_invoices, redirect_to_create_invoices
+from .views import Login, logout, invoices, redirect_to_invoices, InvoiceDetail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', Login.as_view()),
-    path('logout/', logout),
-    path('create_invoices', create_invoices),
-    path('', redirect_to_create_invoices),
+]
+
+urlpatterns += [
+    url(r'login', Login.as_view()),
+    url(r'logout', logout),
+    url(r'invoices$', invoices),
+    url(r'invoices/(?P<invoice_id>\d+)', InvoiceDetail.as_view()),
+    url(r'^$', redirect_to_invoices),
 ]
