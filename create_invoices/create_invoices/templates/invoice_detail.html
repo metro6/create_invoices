@@ -1,27 +1,48 @@
 {% extends "base.html" %}
+{% load tz  %}
 {% block content %}
     {% if invoice %}
         <h1>{{ invoice.name }}</h1>
-        <form method="post" action="">
+        <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
-            <p><textarea name="text">{{ invoice.text }}</textarea> Краткое описание</p>
-            <p><textarea name="full_text">{{ invoice.full_text }}</textarea> Полное описание</p>
-            <p><input type="checkbox" name="send_text"> Отправить полный текст</p>
-            <p><input type="checkbox" name="send_short_text"> Отправить краткий текст</p>
-            <p>
-                {% if invoice.image %}
-                    <img src="{{ invoice.image.src }}">
-                {% endif %}
-                <input type="file" name="image"> Картинка
-            </p>
-            <p><input type="datetime-local" name="departure_date" value="{{ invoice.departure_date }}">Дата отправления</p>
-            <p><input type="datetime-local" name="receive_date" value="{{ invoice.receive_date }}">Дата получения</p>
+            {{ invoice_form.as_p }}
             <p><input type="submit" value="Внести изменения"></p>
-            <p><button name="word">Экспорт документа в WORD</button></p>
+            <p><button name="word" id="get_word" data-id="{{ invoice.pk }}">Экспорт документа в WORD</button></p>
         </form>
         <p>К списку <a href="/invoices">продуктов</a></p>
     {% else %}
         <h1>Данный продукт не найден</h1>
         <p>попробуйте найти еще <a href="/invoices">раз</a></p>
     {% endif %}
+
+    <script>
+      $( ".datetimepicker" ).datetimepicker({
+        format: 'd.m.Y H:i:s',
+      });
+
+      $(function () {
+        $("#get_word").on("click", function() {
+            id_invoice = $(this).data('id');
+            short = $('input[name=send_text]').is(':checked');
+            full = $('input[name=send_full_text]').is(':checked');
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                var a, today;
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(xhttp.response);
+                    today = new Date();
+                    a.download = "invoice_" + id_invoice + today.toDateString().split(" ").join("_") + ".docx";
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    return a.click();
+                }
+            };
+            xhttp.open("GET", "/get_invoice_word/?id=" + id_invoice + '&short=' + short + '&full=' + full, true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.responseType = 'blob';
+            xhttp.send();
+        });
+      })
+    </script>
 {% endblock %}
