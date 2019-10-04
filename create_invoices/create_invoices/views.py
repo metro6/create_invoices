@@ -74,8 +74,12 @@ class InvoiceDetail(View):
                invoice.image = request.FILES.get('image')
             if request.POST.get('departure_date'):
                 invoice.departure_date = datetime.strptime(request.POST.get('departure_date'), '%d.%m.%Y %H:%M:%S')
+            else:
+                invoice.departure_date = None
             if request.POST.get('receive_date'):
                 invoice.receive_date = datetime.strptime(request.POST.get('receive_date'), '%d.%m.%Y %H:%M:%S')
+            else:
+                invoice.receive_date = None
             invoice.save()
         return redirect(request.path)
 
@@ -105,7 +109,8 @@ def get_invoice_word(request):
 
     document = Document()
     document.add_heading(invoice.name, 0)
-    document.add_picture(invoice.image.path, width=Inches(1.25))
+    if invoice.image:
+        document.add_picture(invoice.image.path, width=Inches(1.25))
 
     document.add_paragraph('Дата создания документа ' + datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
 
