@@ -1,5 +1,5 @@
 Django==2.2.6
-lxml==4.4.1
+lxml==4.6.2
 Pillow==6.2.0
 python-docx==0.8.10
 pytz==2019.2
